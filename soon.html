@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <style>
+        /* CSS RESET & BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Modern animated gradient background */
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #3b82f6, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* GLASSMORPHISM CONTAINER */
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* TYPOGRAPHY */
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        /* COUNTDOWN TIMER */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-box span {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 80px;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.05);
+        }
+
+        .time-box small {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* SUBSCRIPTION FORM */
+        .notify-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .notify-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .notify-form input::placeholder {
+            color: #94a3b8;
+        }
+
+        .notify-form input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+
+        .notify-form button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            background: #3b82f6;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+
+        .notify-form button:hover {
+            background: #2563eb;
+        }
+
+        .notify-form button:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            font-size: 0.9rem;
+            color: #10b981; /* Success green */
+            height: 20px;
+            margin-top: 10px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .countdown { gap: 0.5rem; }
+            .time-box span { font-size: 1.5rem; min-width: 60px; padding: 0.8rem; }
+            .notify-form { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Coming Soon</h1>
+        <p>We are currently working hard building something amazing. Subscribe below to be notified when we launch!</p>
+
+        <div class="countdown">
+            <div class="time-box">
+                <span id="days">00</span>
+                <small>Days</small>
+            </div>
+            <div class="time-box">
+                <span id="hours">00</span>
+                <small>Hours</small>
+            </div>
+            <div class="time-box">
+                <span id="minutes">00</span>
+                <small>Minutes</small>
+            </div>
+            <div class="time-box">
+                <span id="seconds">00</span>
+                <small>Seconds</small>
+            </div>
+        </div>
+
+        <form class="notify-form" id="notifyForm">
+            <input type="email" id="email" placeholder="Enter your email address" required>
+            <button type="submit">Notify Me</button>
+        </form>
+        <div class="message" id="formMessage"></div>
+    </div>
+
+    <script>
+        // --- COUNTDOWN TIMER LOGIC ---
+        // Set the date we're counting down to (e.g., 30 days from now)
+        const countdownDate = new Date();
+        countdownDate.setDate(countdownDate.getDate() + 30);
+        const targetTime = countdownDate.getTime();
+
+        // Update the countdown every 1 second
+        const timerInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetTime - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Format numbers to always be two digits (e.g., "09" instead of "9")
+            document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+
+            // If the countdown is finished, display a message
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.querySelector(".countdown").innerHTML = "<h2>We have launched!</h2>";
+            }
+        }, 1000);
+
+        // --- FORM SUBMISSION LOGIC ---
+        const form = document.getElementById('notifyForm');
+        const messageDiv = document.getElementById('formMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent page reload
+            const email = document.getElementById('email').value;
+            
+            // Here you would normally send the email to your backend/database
+            // For now, we'll just show a success message
+            messageDiv.textContent = "Thanks! We'll notify you at " + email + ".";
+            messageDiv.style.color = "#10b981"; // Ensure it's green
+            
+            // Clear the input
+            form.reset();
+            
+            // Clear the message after 5 seconds
+            setTimeout(() => {
+                messageDiv.textContent = "";
+            }, 5000);
+        });
+    </script>
+
+</body>
+</html>
